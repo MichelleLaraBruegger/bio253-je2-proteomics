@@ -22,6 +22,8 @@ combined_site*.tsv
 # built from NCBI/UniProt/STRING), not unpublished course data:
 !reference/*.fasta
 !reference/*.tsv.gz
+# keep the uncompressed twin of a reference table out (it is 10x the size):
+reference/*.tsv
 
 # ---- Rendered exercise notebooks and Quarto caches ------------------------
 # analyses/_output/ holds the WORKED exercise notebooks -- never commit those,
