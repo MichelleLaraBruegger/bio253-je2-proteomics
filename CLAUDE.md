@@ -57,8 +57,10 @@ use small steps and short code, and explain *why*.
   NE1919 hits *stp1* at codon 189 of 247 (76 % into the gene). *stp1* and *stk1*
   overlap by 4 bp, i.e. one operon. See `TRANSPOSON_INSERTIONS` in
   `R/constants.R` and notebook 07.
-- `ermB` is NOT in the search FASTA, so "ErmB not found" means "never looked
-  for", not "not there". See `reference/README.md`.
+- `ermB` is NOT in the search FASTA behind the current DEA tables, so in those
+  results "ErmB not found" means "never looked for", not "not there". The
+  sequences needed to re-search are in `reference/transposon_proteins.fasta`
+  (from GenBank AY672109/AY672108); see `reference/README.md`.
 
 ## Data layout (local only, git-ignored)
 

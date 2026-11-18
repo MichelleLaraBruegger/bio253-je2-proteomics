@@ -1,6 +1,8 @@
 # reference/ – public reference data
 
-Two independent things live here:
+Unlike `data/`, this folder **is** committed: everything here is derived from
+public resources (NCBI, UniProt, STRING, GenBank), not from the unpublished
+course data. Two independent things live here:
 
 1. **Protein metadata for the whole search database** —
    `JE2_protein_metadata.tsv.gz` (4,155 proteins x 80 columns) and
@@ -62,85 +64,30 @@ cat p41881_db1_SA_JE2_modNmoreTranslations_20260630.fasta \
 
 4,155 + 11 = 4,166 entries, so the effect on the FDR estimate is negligible.
 
-## Appendix: the original ErmB-only proposal
-
-
-Small, public reference sequences. Unlike `data/`, this folder **is** committed:
-nothing here is unpublished course data.
-
-## Why
-
-Our two mutants carry the *bursa aurealis* transposon (Nebraska Transposon
-Mutant Library). It is 3,237 bp and carries two genes of its own:
-
-* **`ermB`** – erythromycin resistance, the marker the mutants are selected with
-* **`gfp`**
-
-If either is expressed, its protein is physically present in the `stk` and `stp`
-samples and absent from the wild type. That would be a **positive** control for
-the transposon, which is much nicer evidence than the absence of Stk1/Stp1.
-
-But a database search can only report sequences that are in the FASTA it
-searched. Our database
-(`p41881_db1_SA_JE2_modNmoreTranslations_20260630.fasta`, 4,155 entries)
-contains **no ErmB at all**, so the question has never been asked of the data.
-Notebook [`analyses/07_transposon_mutants.qmd`](../analyses/07_transposon_mutants.qmd)
-walks through this.
-
-## What is here
-
-| file | what |
-|---|---|
-| `transposon_proteins.fasta` | the 11 plasmid-encoded proteins (see above). The ErmB in pBursa is byte-identical to UniProt P20173, which this file supersedes. |
-
-## How to use it
-
-```bash
-cat p41881_db1_SA_JE2_modNmoreTranslations_20260630.fasta \
-    reference/transposon_proteins.fasta > JE2_plus_transposon.fasta
-```
-
-then re-run the search (FragPipe/MSFragger) against `JE2_plus_ermB.fasta` and
-look at ErmB across the 27 samples. The prediction is explicit:
-
-* **detected in the 18 mutant samples, absent from the 9 `anc` samples** →
-  the transposon is present and expressed; a clean positive control.
-* **not detected anywhere** → inconclusive, not evidence of absence. `ermB` is
-  classically regulated by translational attenuation and is strongly induced by
-  erythromycin. If these cultures were grown **without** erythromycin, ErmB may
-  simply be below the detection limit.
-
-Check the growth protocol before interpreting the result either way.
-
-## What is deliberately *not* here
+### What this file deliberately leaves out
 
 **Truncated Stp1 (1–188) and Stk1 (1–45).** Tempting, but they would not help:
 every tryptic peptide of a truncated protein is also a peptide of the
 full-length entry already in the database, so those peptides are *already*
-being found and assigned. Adding the truncations would only create redundant
-protein groups and make inference harder. The way to see a truncation is the
-one used in notebook 07 – look at **where along the protein** the detected
-peptides fall. No new FASTA needed.
+found and assigned. Adding the truncations would only split protein groups and
+make inference harder. The way to see a truncation is the one used in notebook
+07 — look at **where along the protein** the detected peptides fall.
 
 **The junction peptide.** The one genuinely new sequence would be the chimeric
-peptide that runs from the last native codon into the transposon's inverted
-repeat. To build it you need the exact pBursa sequence and the reading frame at
-the insertion point. Worth doing if you want direct proof of the insertion in
-the protein data, but it is a single low-abundance peptide, so absence would
-prove little.
-
-**GFP.** Already in the database as a contaminant entry (`zz_Y-FGCZCont00258_`,
-*A. victoria* GFP) and **not detected**. Weak evidence: the transposon carries a
-codon-optimised *gfp* whose protein sequence may differ from that entry. If you
-re-search anyway, add the actual pBursa GFP sequence rather than trusting the
-contaminant entry.
+peptide running from the last native codon into the transposon's terminal
+inverted repeat. The pBursa sequence needed for this is now available
+(AY672109), so it could be built — but it is a single, low-abundance peptide
+whose absence would prove little, so it is not included.
 
 ## Sources
 
 * Fey P. D. *et al.* (2013) *mBio* 4:e00537-12 — the NTML and the *bursa
   aurealis* construct. <https://doi.org/10.1128/mBio.00537-12>
 * Bae T. *et al.* (2004) *PNAS* 101:12312–12317 — the original *bursa aurealis*
-  transposon and pBursa. PMID 15304642
+  transposon, pBursa and pFA545. PMID 15304642
+* GenBank [AY672109](https://www.ncbi.nlm.nih.gov/nuccore/AY672109) (pBursa) and
+  [AY672108](https://www.ncbi.nlm.nih.gov/nuccore/AY672108) (pFA545) — the
+  sequences in `transposon_proteins.fasta`.
 * NTML insertion map (JE2 coordinates) — <https://ntml.unmc.edu/tninsertionmap>
 * Prust N. *et al.* (2021) *Mol Cell Proteomics* 20:100034 — used the same two
   mutants, NE217 and NE1919.
